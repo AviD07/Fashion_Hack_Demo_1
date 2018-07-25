@@ -54,7 +54,7 @@ public class MasonryAdapter extends RecyclerView.Adapter<MasonryAdapter.MasonryV
                 public void onClick(View v) {
                     //v.getId() will give you the image id
                     // Intent is what you use to start another activity
-                    Intent intent = new Intent(this, ImageViewerActivity.class);
+                    Intent intent = new Intent(v.getContext(), ImageViewerActivity.class);
                     context.startActivity(intent);
                 }
             });

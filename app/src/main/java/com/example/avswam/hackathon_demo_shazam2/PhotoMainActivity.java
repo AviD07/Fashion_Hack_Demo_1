@@ -1,6 +1,11 @@
 package com.example.avswam.hackathon_demo_shazam2;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PhotoMainActivity extends AppCompatActivity {
+
+    private static int RESULT_LOAD_IMAGE = 1;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -85,6 +94,33 @@ public class PhotoMainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageView imageView = (ImageView) findViewById(R.id.selectedImageView);
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+        } else {
+            ImageView imageView = (ImageView) findViewById(R.id.selectedImageView);
+            imageView.setImageResource(R.drawable.selected_image);
+        }
+
+
     }
 
     /**
@@ -188,6 +224,31 @@ public class PhotoMainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.main_upload_page_layout, container, false);
 //            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 //            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            Button selectButton = (Button) rootView.findViewById(R.id.SelectFileButton);
+            selectButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View arg0) {
+
+                    Intent i = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                    startActivityForResult(i, RESULT_LOAD_IMAGE);
+                }
+            });
+
+            Button uploadButton = (Button) rootView.findViewById(R.id.UploadFileButton);
+            uploadButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //v.getId() will give you the image id
+                    // Intent is what you use to start another activity
+                    Intent intent = new Intent(v.getContext(), ImageViewerActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
+
             return rootView;
         }
     }
@@ -237,6 +298,8 @@ public class PhotoMainActivity extends AppCompatActivity {
             SpacesItemDecoration decoration = new SpacesItemDecoration(16);
             mRecyclerView.addItemDecoration(decoration);
 
+            rootView.isInEditMode();
+
             return rootView;
         }
     }
@@ -256,11 +319,11 @@ public class PhotoMainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch(position) {
-                case 0:
-                    return DiscoverFragment.newInstance(position + 1);
-                case 1:
-                    return MainUploadFragment.newInstance(position + 1);
                 case 2:
+                    return DiscoverFragment.newInstance(position + 1);
+                case 0:
+                    return MainUploadFragment.newInstance(position + 1);
+                case 1:
                     return MyViewsFragment.newInstance(position+1);
             }
             return PlaceholderFragment.newInstance(position + 1);
