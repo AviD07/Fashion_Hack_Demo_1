@@ -1,9 +1,12 @@
 package com.example.avswam.hackathon_demo_shazam2;
 
+import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -218,9 +221,22 @@ public class PhotoMainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+//            View rootView = inflater.inflate(R.layout.my_views, container, false);
+////            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+////            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+//            return rootView;
+
+            RecyclerView mRecyclerView;
+
             View rootView = inflater.inflate(R.layout.my_views, container, false);
-//            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.masonry_grid);
+            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+            MasonryAdapter adapter = new MasonryAdapter(this.getContext());
+            mRecyclerView.setAdapter(adapter);
+            SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+            mRecyclerView.addItemDecoration(decoration);
+
             return rootView;
         }
     }
