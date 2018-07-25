@@ -34,7 +34,7 @@ public class MasonryAdapter extends RecyclerView.Adapter<MasonryAdapter.MasonryV
     @Override
     public void onBindViewHolder(MasonryView holder, int position) {
         holder.imageView.setImageResource(imgList[position]);
-        holder.textView.setText(nameList[position]);
+//        holder.textView.setText(nameList[position]);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MasonryAdapter extends RecyclerView.Adapter<MasonryAdapter.MasonryV
 
     class MasonryView extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView textView;
+//        TextView textView;
 
         public MasonryView(View itemView) {
             super(itemView);
@@ -58,7 +58,7 @@ public class MasonryAdapter extends RecyclerView.Adapter<MasonryAdapter.MasonryV
                     context.startActivity(intent);
                 }
             });
-            textView = (TextView) itemView.findViewById(R.id.img_name);
+//            textView = (TextView) itemView.findViewById(R.id.img_name);
 
         }
     }
